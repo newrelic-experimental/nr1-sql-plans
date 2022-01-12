@@ -1,39 +1,20 @@
 {
-    "schemaType": "VISUALIZATION",
-    "id": "sql-plans",
-    "displayName": "SqlPlans",
-    "description": "",
-    "configuration": [
-        {
-            "name": "nrqlQueries",
-            "title": "NRQL Queries",
-            "type": "collection",
-            "items": [
-                {
-                    "name": "accountId",
-                    "title": "Account ID",
-                    "description": "Account ID to be associated with the query",
-                    "type": "account-id"
-                },
-                {
-                    "name": "query",
-                    "title": "Query",
-                    "description": "NRQL query for visualization",
-                    "type": "nrql"
-                }
-            ]
-        },
-        {
-            "name": "fill",
-            "title": "Fill color",
-            "description": "A fill color to override the default fill color",
-            "type": "string"
-        },
-        {
-            "name": "stroke",
-            "title": "Stroke color",
-            "description": "A stroke color to override the default stroke color",
-            "type": "string"
-        }
-    ]
+  "schemaType": "VISUALIZATION",
+  "id": "sql-plans",
+  "displayName": "SQL Plans",
+  "description": "",
+  "configuration": [
+    {
+      "name": "accountId",
+      "title": "Account ID",
+      "description": "Account ID to be associated with the query",
+      "type": "account-id"
+    },
+    {
+      "name": "compactDetails",
+      "title": "Display details in a compact view",
+      "description": "Display details in a compact view",
+      "type": "boolean"
+    }
+  ]
 }

@@ -1,152 +1,73 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import {
-    Radar,
-    RadarChart,
-    PolarGrid,
-    PolarAngleAxis,
-    PolarRadiusAxis,
-} from 'recharts';
-import {Card, CardBody, HeadingText, NrqlQuery, Spinner, AutoSizer} from 'nr1';
+import React from "react";
+import PropTypes from "prop-types";
+import { Card, CardBody, HeadingText, Spinner, AutoSizer } from "nr1";
+
+import PlansList from "./plans-list";
+import PlanTree from "./plan-tree";
 
 export default class SqlPlansVisualization extends React.Component {
-    // Custom props you wish to be configurable in the UI must also be defined in
-    // the nr1.json file for the visualization. See docs for more details.
-    static propTypes = {
-        /**
-         * A fill color to override the default fill color. This is an example of
-         * a custom chart configuration.
-         */
-        fill: PropTypes.string,
+  static propTypes = {
+    accountId: PropTypes.number,
+    compactDetails: PropTypes.bool,
+  };
 
-        /**
-         * A stroke color to override the default stroke color. This is an example of
-         * a custom chart configuration.
-         */
-        stroke: PropTypes.string,
-        /**
-         * An array of objects consisting of a nrql `query` and `accountId`.
-         * This should be a standard prop for any NRQL based visualizations.
-         */
-        nrqlQueries: PropTypes.arrayOf(
-            PropTypes.shape({
-                accountId: PropTypes.number,
-                query: PropTypes.string,
-            })
-        ),
-    };
+  state = {
+    data: null,
+    messageId: null,
+  };
 
-    /**
-     * Restructure the data for a non-time-series, facet-based NRQL query into a
-     * form accepted by the Recharts library's RadarChart.
-     * (https://recharts.org/api/RadarChart).
-     */
-    transformData = (rawData) => {
-        return rawData.map((entry) => ({
-            name: entry.metadata.name,
-            // Only grabbing the first data value because this is not time-series data.
-            value: entry.data[0].y,
-        }));
-    };
+  selectMessage = (messageId) => this.setState({ messageId: messageId });
 
-    /**
-     * Format the given axis tick's numeric value into a string for display.
-     */
-    formatTick = (value) => {
-        return value.toLocaleString();
-    };
+  render() {
+    const { accountId, compactDetails } = this.props;
+    const { messageId } = this.state;
 
-    render() {
-        const {nrqlQueries, stroke, fill} = this.props;
+    if (!accountId) return <EmptyState />;
 
-        const nrqlQueryPropsAvailable =
-            nrqlQueries &&
-            nrqlQueries[0] &&
-            nrqlQueries[0].accountId &&
-            nrqlQueries[0].query;
+    const display = messageId ? (
+      <PlanTree
+        accountId={accountId}
+        compactDetails={compactDetails}
+        messageId={messageId}
+        selectMessage={this.selectMessage}
+      />
+    ) : (
+      <PlansList accountId={accountId} selectMessage={this.selectMessage} />
+    );
 
-        if (!nrqlQueryPropsAvailable) {
-            return <EmptyState />;
-        }
-
-        return (
-            <AutoSizer>
-                {({width, height}) => (
-                    <NrqlQuery
-                        query={nrqlQueries[0].query}
-                        accountId={parseInt(nrqlQueries[0].accountId)}
-                        pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
-                    >
-                        {({data, loading, error}) => {
-                            if (loading) {
-                                return <Spinner />;
-                            }
-
-                            if (error) {
-                                return <ErrorState />;
-                            }
-
-                            const transformedData = this.transformData(data);
-
-                            return (
-                                <RadarChart
-                                    width={width}
-                                    height={height}
-                                    data={transformedData}
-                                >
-                                    <PolarGrid />
-                                    <PolarAngleAxis dataKey="name" />
-                                    <PolarRadiusAxis
-                                        tickFormatter={this.formatTick}
-                                    />
-                                    <Radar
-                                        dataKey="value"
-                                        stroke={stroke || '#51C9B7'}
-                                        fill={fill || '#51C9B7'}
-                                        fillOpacity={0.6}
-                                    />
-                                </RadarChart>
-                            );
-                        }}
-                    </NrqlQuery>
-                )}
-            </AutoSizer>
-        );
-    }
+    return <AutoSizer>{({ width, height }) => display}</AutoSizer>;
+  }
 }
 
 const EmptyState = () => (
-    <Card className="EmptyState">
-        <CardBody className="EmptyState-cardBody">
-            <HeadingText
-                spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-                type={HeadingText.TYPE.HEADING_3}
-            >
-                Please provide at least one NRQL query & account ID pair
-            </HeadingText>
-            <HeadingText
-                spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
-                type={HeadingText.TYPE.HEADING_4}
-            >
-                An example NRQL query you can try is:
-            </HeadingText>
-            <code>
-                FROM NrUsage SELECT sum(usage) FACET metric SINCE 1 week ago
-            </code>
-        </CardBody>
-    </Card>
+  <Card className="EmptyState">
+    <CardBody className="EmptyState-cardBody">
+      <HeadingText
+        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
+        type={HeadingText.TYPE.HEADING_3}
+      >
+        Pick an Account ID to fetch data. <br />
+        <br />
+        To collect query plan data, use the&nbsp;
+        <a href="https://github.com/msummers-nr/nri-mssql/" target="_blank">
+          MS SQL integration
+        </a>
+        .
+      </HeadingText>
+    </CardBody>
+  </Card>
 );
 
 const ErrorState = () => (
-    <Card className="ErrorState">
-        <CardBody className="ErrorState-cardBody">
-            <HeadingText
-                className="ErrorState-headingText"
-                spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-                type={HeadingText.TYPE.HEADING_3}
-            >
-                Oops! Something went wrong.
-            </HeadingText>
-        </CardBody>
-    </Card>
+  <Card className="ErrorState">
+    <CardBody className="ErrorState-cardBody">
+      <HeadingText
+        className="ErrorState-headingText"
+        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
+        type={HeadingText.TYPE.HEADING_3}
+      >
+        Oops! Something went wrong.
+      </HeadingText>
+    </CardBody>
+  </Card>
 );
