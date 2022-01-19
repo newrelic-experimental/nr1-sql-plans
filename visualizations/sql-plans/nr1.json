@@ -1,7 +1,7 @@
 {
   "schemaType": "VISUALIZATION",
   "id": "sql-plans",
-  "displayName": "SQL Plans",
+  "displayName": "SQL Query Plans",
   "description": "",
   "configuration": [
     {

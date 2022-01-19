@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Button, NrqlQuery } from "nr1";
+import { Button, NrqlQuery, Tooltip } from "nr1";
 
 import zlib from "zlib";
 import { Buffer } from "buffer";
@@ -17,6 +17,7 @@ export default class PlanTree extends React.Component {
 
   state = {
     data: null,
+    sql: null,
   };
 
   parser = null;
@@ -56,23 +57,26 @@ export default class PlanTree extends React.Component {
   loadData = async () => {
     const { accountId, messageId } = this.props;
 
-    const query = `SELECT query_plan, blob(\`newrelic.ext.query_plan\`) FROM Log WHERE messageId='${messageId}'`;
+    const query = `SELECT query_plan, blob(\`newrelic.ext.query_plan\`), short_text, complete_text FROM Log WHERE messageId='${messageId}'`;
 
     const { data, error } = await NrqlQuery.query({ query, accountId });
 
     if (data && data.length) {
-      const { data: rows } = data[0];
-      rows.map((row, r) => {
-        const { query_plan: plan, "newrelic.ext.query_plan": blob } = row;
-        const planCont = blob ? atob(blob) : "";
-        const queryPlan = `${plan || ""}${planCont}`;
-        const compressedData = Buffer.from(queryPlan, "base64");
-        this.jsonFromZip(compressedData).then((json) => this.buildTree(json));
-      });
+      const {
+        data: [row],
+      } = data[0];
+      const { query_plan: plan, "newrelic.ext.query_plan": blob } = row;
+      const planCont = blob ? atob(blob) : "";
+      const queryPlan = `${plan || ""}${planCont}`;
+      const compressedData = Buffer.from(queryPlan, "base64");
+      const sql = { short: row.short_text, complete: row.complete_text };
+      this.jsonFromZip(compressedData).then((json) =>
+        this.buildTree(json, sql)
+      );
     }
   };
 
-  buildTree = async (treeData) => {
+  buildTree = async (treeData, sql) => {
     let data = {};
     const {
       ShowPlanXML: {
@@ -112,7 +116,7 @@ export default class PlanTree extends React.Component {
       }
     }
 
-    this.setState({ data });
+    this.setState({ data, sql });
   };
 
   buildBranch = async (branchData) => {
@@ -142,24 +146,48 @@ export default class PlanTree extends React.Component {
     data.storage = this.getDataForAttrib(operationData, "-Storage");
     data.ordered = Boolean(this.getDataForAttrib(operationData, "-Ordered"));
 
-    if ("Object" in branchData) {
-      const { "-Database": db, "-Schema": sch, "-Table": tbl } = branchData[
-        "Object"
-      ];
-      if (db && sch && tbl) data.object = `${db}.${sch}.${tbl}`;
+    if ("Object" in operationData) {
+      const {
+        "-Database": db,
+        "-Schema": sch,
+        "-Table": tbl,
+        "-Index": idx,
+      } = operationData["Object"];
+      if (db && sch && tbl)
+        data.object = `${db}.${sch}.${tbl}${idx ? `.${idx}` : ""}`;
     }
 
     if ("OutputList" in branchData) {
       const o = branchData["OutputList"]["ColumnReference"];
-      if (o && !Array.isArray(o)) {
-        const {
-          "-Database": db,
-          "-Schema": sch,
-          "-Table": tbl,
-          "-Column": col,
-        } = o;
-        if (db && sch && tbl && col)
-          data.outputList = `${db}.${sch}.${tbl}.${col}`;
+      if (o) {
+        if (!Array.isArray(o)) {
+          const {
+            "-Database": db,
+            "-Schema": sch,
+            "-Table": tbl,
+            "-Column": col,
+          } = o;
+          data.outputList = `${db ? `${db}.` : ""}${sch ? `${sch}.` : ""}${
+            tbl ? `${tbl}.` : ""
+          }${col ? col : ""}`;
+        } else {
+          data.outputList = o
+            .reduce((acc, ol) => {
+              const {
+                "-Database": db,
+                "-Schema": sch,
+                "-Table": tbl,
+                "-Column": col,
+              } = ol;
+              acc.push(
+                `${db ? `${db}.` : ""}${sch ? `${sch}.` : ""}${
+                  tbl ? `${tbl}.` : ""
+                }${col ? col : ""}`
+              );
+              return acc;
+            }, [])
+            .join("\n");
+        }
       }
     }
 
@@ -197,7 +225,7 @@ export default class PlanTree extends React.Component {
 
   render() {
     const { accountId, compactDetails } = this.props;
-    const { data } = this.state;
+    const { data, sql } = this.state;
 
     return (
       <>
@@ -214,13 +242,16 @@ export default class PlanTree extends React.Component {
                 compactDetails={compactDetails}
               />
             </div>
-            <div className="back-btn">
+            <div className="header-bar">
               <Button
                 type={Button.TYPE.PLAIN_NEUTRAL}
                 sizeType={Button.SIZE_TYPE.SMALL}
                 iconType={Button.ICON_TYPE.INTERFACE__ARROW__ARROW_LEFT}
                 onClick={this.back}
               />
+              <span className="sql">
+                <Tooltip text={sql.complete}>{sql.short}</Tooltip>
+              </span>
             </div>
           </>
         )}

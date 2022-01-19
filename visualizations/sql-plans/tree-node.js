@@ -19,10 +19,10 @@ export default class TreeNode extends React.Component {
     this.uid = id();
   }
 
-  renderItem = (item, value) => (
+  renderItem = (item, value, classes) => (
     <div className="item">
       <div className="title">{item}</div>
-      <div className="value">{value}</div>
+      <div className={`${classes ? classes : "value"}`}>{value}</div>
     </div>
   );
 
@@ -32,15 +32,16 @@ export default class TreeNode extends React.Component {
 
     return (
       <>
-        <div
-          className="cell hdr"
-          style={{ paddingLeft: `${level * 8}px` }}
-          onClick={this.toggleDetail}
-        >
-          {data.type}
+        <div className="row" onClick={this.toggleDetail}>
+          <div
+            className="cell hdr"
+            style={{ paddingLeft: `${(level + 1) * 8}px` }}
+          >
+            {data.type}
+          </div>
+          <div className="cell num">{this.displayNum(data.estSubtreeCost)}</div>
+          <div className="cell num">&nbsp;</div>
         </div>
-        <div className="cell num">{this.displayNum(data.estSubtreeCost)}</div>
-        <div className="cell num">&nbsp;</div>
         <div
           className={`cell detail ${showDetail ? "show" : ""} ${
             compactDetails ? "compact" : ""
@@ -65,17 +66,28 @@ export default class TreeNode extends React.Component {
     const { data, level, compactDetails } = this.props;
     const { showDetail } = this.state;
 
+    let title = data.physicalOp;
+    if ("object" in data) {
+      const objectParts = data.object.split(".");
+      if (objectParts.length) {
+        title += ` ${objectParts[objectParts.length - 1]}`;
+      } else if (data.object) {
+        title += ` ${data.object}`;
+      }
+    }
+
     return (
       <>
-        <div
-          className="cell hdr"
-          style={{ paddingLeft: `${level * 8}px` }}
-          onClick={this.toggleDetail}
-        >
-          {data.physicalOp}
+        <div className="row" onClick={this.toggleDetail}>
+          <div
+            className="cell hdr"
+            style={{ paddingLeft: `${(level + 1) * 8}px` }}
+          >
+            {title}
+          </div>
+          <div className="cell num">{this.displayNum(data.estSubtreeCost)}</div>
+          <div className="cell num">{this.displayNum(data.estCPUCost)}</div>
         </div>
-        <div className="cell num">{this.displayNum(data.estSubtreeCost)}</div>
-        <div className="cell num">{this.displayNum(data.estCPUCost)}</div>
         <div
           className={`cell detail ${showDetail ? "show" : ""} ${
             compactDetails ? "compact" : ""
@@ -116,7 +128,7 @@ export default class TreeNode extends React.Component {
           {"outputList" in data && (
             <>
               <div className="break" />
-              {this.renderItem("Object", data.outputList)}
+              {this.renderItem("Output List", data.outputList, "prewrap")}
             </>
           )}
         </div>

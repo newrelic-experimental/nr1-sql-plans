@@ -2,16 +2,30 @@
   display: grid;
   grid-template-columns: 1fr max-content max-content;
   margin: 0.5em;
+  font-family: Open Sans, Segoe UI, Tahoma, sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #283636;
+  margin-top: 32px;
 
   &.four-col {
     grid-template-columns: 1fr max-content max-content max-content;
   }
 
+  .row {
+    display: contents;
+    cursor: pointer;
+
+    &:hover {
+      &> div {
+        background-color: #f0fbfc;
+      }
+    }
+  }
+
   .cell {
-    padding: .5em;
-    font-size: 1.2em;
-    border: 1px solid #000;
-    border-width: 1px 3px 0 0;
+    padding: 8px;
+    border-top: 1px solid #F3F4F4;
 
     &.reg-fs {
       font-size: 1em;
@@ -27,13 +41,11 @@
   }
 
   .title {
-    text-transform: uppercase;
-    font-size: .66em;
+    color: #556060;
   }
 
   .hdr {
-    font-weight: bold;
-    cursor: pointer;
+    font-weight: 600;
   }
 
   .num {
@@ -43,10 +55,7 @@
 
   .detail {
     grid-column: 1 / -1;
-    background: #f3f1c9;
-    border-radius: 10px;
     padding: 0.5em;
-    margin: 0.5em;
     flex-wrap: wrap;
     display: none;
     border: 0;
@@ -69,6 +78,10 @@
 
       .value {
         font-family: monospace;
+      }
+
+      .prewrap {
+        white-space: pre-wrap;
       }
     }
   }
@@ -105,14 +118,20 @@
   }
 }
 
-.back-btn {
+.header-bar {
   position: fixed;
-  top: 0.5em;
+  top: 0;
+  left: 0;
+  right: 0;
   z-index: 9999;
   background: #fff;
-  box-shadow: 5px 1px 10px 0 rgba(0, 0, 0, .2);
-  border-radius: 0 4px 4px 0;
-  padding: 0.25em;
+  box-shadow: 0 0 4px #ddd;
+  padding: 2px;
+
+  .sql {
+    line-height: 24px;
+    margin-left: 8px;
+  }
 }
 
 

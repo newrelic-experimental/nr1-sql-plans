@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { NrqlQuery } from "nr1";
+import { NrqlQuery, Tooltip } from "nr1";
 
 export default class PlansList extends React.Component {
   static propTypes = {
@@ -20,7 +20,7 @@ export default class PlansList extends React.Component {
   loadData = async () => {
     const { accountId } = this.props;
 
-    const query = `SELECT sql_hostname, database_name, short_text, timestamp, messageId FROM Log WHERE query_plan IS NOT NULL`;
+    const query = `SELECT sql_hostname, database_name, short_text, timestamp, messageId, complete_text FROM Log WHERE query_plan IS NOT NULL`;
 
     const { data: resp, error } = await NrqlQuery.query({ query, accountId });
 
@@ -59,19 +59,16 @@ export default class PlansList extends React.Component {
             <div className="cell first-row title">Host</div>
             <div className="cell first-row title">Date/Time</div>
             {data.map((col) => (
-              <>
-                <div
-                  className="cell reg-fs hdr"
-                  onClick={() => this.select(col.messageId)}
-                >
-                  {col.short_text}
+              <div className="row" onClick={() => this.select(col.messageId)}>
+                <div className="cell reg-fs hdr">
+                  <Tooltip text={col.complete_text}>{col.short_text}</Tooltip>
                 </div>
                 <div className="cell reg-fs">{col.database_name}</div>
                 <div className="cell reg-fs">{col.sql_hostname}</div>
                 <div className="cell reg-fs">
                   {this.dateTimeFormat(col.timestamp)}
                 </div>
-              </>
+              </div>
             ))}
           </div>
         )}
