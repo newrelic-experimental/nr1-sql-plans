@@ -4,7 +4,7 @@
 
 # SQL Query Plans
 
-SQL Query Plans is custom visualization that displays database query plans within New Relic dashboards. Currently only supports MS SQL Server.
+SQL Query Plans is a custom visualization that displays database query plans within New Relic dashboards. Currently only supports MS SQL Server.
 
 ![query plan](screenshots/sql-query-plans-1.png)
 
@@ -52,7 +52,7 @@ New Relic hosts and moderates an online forum where customers can interact with 
 https://discuss.newrelic.com/c/build-on-new-relic/nerdpacks
 
 ## Contributing
-We encourage your contributions to improve Cards for Observability! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
+We encourage your contributions to improve SQL Query Plans! Keep in mind when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
 If you have any questions, or to execute our corporate CLA, required if your contribution is on behalf of a company,  please drop us an email at opensource@newrelic.com.
 
 ## Security
@@ -62,6 +62,6 @@ As noted in our [security policy](https://github.com/newrelic-experimental/nr1-c
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
 
 ## License
-Cards for Observability is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
+SQL Query Plans is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
 
-Cards for Observability also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the [third-party notices](THIRD_PARTY_NOTICES.md) document.
+SQL Query Plans also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the [third-party notices](THIRD_PARTY_NOTICES.md) document.
