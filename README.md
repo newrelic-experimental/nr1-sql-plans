@@ -17,7 +17,7 @@ SQL Query Plans is custom visualization that displays database query plans withi
    npm -v
    ```
 
-2. Install the [New Relic One CLI](https://one.newrelic.com/launcher/developer-center.launcher) by going to [this link](https://one.newrelic.com/launcher/developer-center.launcher) and following the instructions (5 minutes or less) to install and set up your New Relic development environment.
+2. Install the [New Relic One CLI](https://one.newrelic.com/developer-center) by going to [this link](https://one.newrelic.com/developer-center) and following the instructions (5 minutes or less) to install and set up your New Relic development environment.
 
 3. Run the following command to clone this repository and run the code locally against your New Relic data:
 
