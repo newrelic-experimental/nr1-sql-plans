@@ -1,0 +1,17 @@
+{
+    "tagline": "SQL Query Plans",
+    "repository": "https://github.com/newrelic/nr1-sql-plans.git",
+    "details": "[]",
+    "support": {
+      "issues": {
+        "url": "https://github.com/newrelic/nr1-sql-plans/issues"
+      },
+      "email": {
+        "address": "opensource+nr1-sql-plans@newrelic.com"
+      },
+      "community": {
+        "url": "https://discuss.newrelic.com/c/build-on-new-relic/nerdpacks"
+      }
+    },
+    "whatsNew": "Initial release"
+  }

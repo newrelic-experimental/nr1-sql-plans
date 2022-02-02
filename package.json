@@ -4,10 +4,12 @@
     "version": "0.2.0",
     "scripts": {
         "start": "nr1 nerdpack:serve",
-        "test": "exit 0"
+        "test": "exit 0",
+        "eslint-check": "eslint nerdlets/",
+        "eslint-fix": "eslint nerdlets/ --fix"
     },
-    "nr1": {
-        "uuid": "daadadb2-5bab-4d5f-9055-e4e63a572dbd"
+    "bugs": {
+        "email": "opensource+nr1-sql-plans@newrelic.com"
     },
     "dependencies": {
         "prop-types": "^15.6.2",
