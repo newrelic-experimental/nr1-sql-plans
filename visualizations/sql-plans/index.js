@@ -1,9 +1,9 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Card, CardBody, HeadingText, Spinner, AutoSizer } from "nr1";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Card, CardBody, HeadingText, Spinner, AutoSizer } from 'nr1';
 
-import PlansList from "./plans-list";
-import PlanTree from "./plan-tree";
+import PlansList from './plans-list';
+import PlanTree from './plan-tree';
 
 export default class SqlPlansVisualization extends React.Component {
   static propTypes = {

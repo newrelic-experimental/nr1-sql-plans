@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { NrqlQuery, Tooltip } from "nr1";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { NrqlQuery, Tooltip } from 'nr1';
 
 export default class PlansList extends React.Component {
   static propTypes = {
@@ -31,13 +31,13 @@ export default class PlansList extends React.Component {
   };
 
   dateTimeFormat = (dt) =>
-    new Intl.DateTimeFormat("default", {
-      year: "2-digit",
-      month: "numeric",
-      day: "numeric",
-      hour: "numeric",
-      minute: "numeric",
-      second: "numeric",
+    new Intl.DateTimeFormat('default', {
+      year: '2-digit',
+      month: 'numeric',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
     }).format(dt);
 
   select = (messageId) => {

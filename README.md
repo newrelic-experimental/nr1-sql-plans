@@ -4,7 +4,7 @@
 
 # SQL Query Plans
 
-SQL Query Plans is custom visualization that display database query plans within New Relic dashboards. Currently only supports MS SQL Server.
+SQL Query Plans is custom visualization that displays database query plans within New Relic dashboards. Currently only supports MS SQL Server.
 
 ## Getting started
 

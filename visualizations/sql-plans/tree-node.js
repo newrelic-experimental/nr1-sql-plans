@@ -1,7 +1,7 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
-import id from "./id";
+import id from './id';
 
 export default class TreeNode extends React.Component {
   static propTypes = {
@@ -22,7 +22,7 @@ export default class TreeNode extends React.Component {
   renderItem = (item, value, classes) => (
     <div className="item">
       <div className="title">{item}</div>
-      <div className={`${classes ? classes : "value"}`}>{value}</div>
+      <div className={`${classes ? classes : 'value'}`}>{value}</div>
     </div>
   );
 
@@ -43,20 +43,20 @@ export default class TreeNode extends React.Component {
           <div className="cell num">&nbsp;</div>
         </div>
         <div
-          className={`cell detail ${showDetail ? "show" : ""} ${
-            compactDetails ? "compact" : ""
+          className={`cell detail ${showDetail ? 'show' : ''} ${
+            compactDetails ? 'compact' : ''
           }`}
           style={{ marginLeft: `${level * 8}px` }}
         >
-          {this.renderItem("Cached Plan Size", data.cachedPlanSize)}
-          {this.renderItem("Estimated Operator Cost", "???")}
-          {this.renderItem("Estimated Subtree Cost", data.estSubtreeCost)}
+          {this.renderItem('Cached Plan Size', data.cachedPlanSize)}
+          {this.renderItem('Estimated Operator Cost', '???')}
+          {this.renderItem('Estimated Subtree Cost', data.estSubtreeCost)}
           {this.renderItem(
-            "Estimated Number of Rows Per Execution",
+            'Estimated Number of Rows Per Execution',
             data.estNumRowsPerExec
           )}
           <div className="break" />
-          {this.renderItem("Statement", data.statement)}
+          {this.renderItem('Statement', data.statement)}
         </div>
       </>
     );
@@ -67,8 +67,8 @@ export default class TreeNode extends React.Component {
     const { showDetail } = this.state;
 
     let title = data.physicalOp;
-    if ("object" in data) {
-      const objectParts = data.object.split(".");
+    if ('object' in data) {
+      const objectParts = data.object.split('.');
       if (objectParts.length) {
         title += ` ${objectParts[objectParts.length - 1]}`;
       } else if (data.object) {
@@ -89,46 +89,46 @@ export default class TreeNode extends React.Component {
           <div className="cell num">{this.displayNum(data.estCPUCost)}</div>
         </div>
         <div
-          className={`cell detail ${showDetail ? "show" : ""} ${
-            compactDetails ? "compact" : ""
+          className={`cell detail ${showDetail ? 'show' : ''} ${
+            compactDetails ? 'compact' : ''
           }`}
           style={{ marginLeft: `${level * 8}px` }}
         >
-          {this.renderItem("Physical Operation", data.physicalOp)}
-          {this.renderItem("Logical Operation", data.logicalOp)}
-          {this.renderItem("Estimated Execution Mode", data.estExecMode)}
-          {"storage" in data ? this.renderItem("Storage", data.storage) : null}
+          {this.renderItem('Physical Operation', data.physicalOp)}
+          {this.renderItem('Logical Operation', data.logicalOp)}
+          {this.renderItem('Estimated Execution Mode', data.estExecMode)}
+          {'storage' in data ? this.renderItem('Storage', data.storage) : null}
           {this.renderItem(
-            "Estimated I/O Cost",
+            'Estimated I/O Cost',
             this.displayNum(data.estIOCost)
           )}
-          {this.renderItem("Estimated CPU Cost", data.estCPUCost)}
-          {this.renderItem("Estimated Subtree Cost", data.estSubtreeCost)}
-          {"estRowsRead" in data
+          {this.renderItem('Estimated CPU Cost', data.estCPUCost)}
+          {this.renderItem('Estimated Subtree Cost', data.estSubtreeCost)}
+          {'estRowsRead' in data
             ? this.renderItem(
-                "Estimated Number of Rows to be Read",
+                'Estimated Number of Rows to be Read',
                 data.estRowsRead
               )
             : null}
           {this.renderItem(
-            "Estimated Number of Rows Per Execution",
+            'Estimated Number of Rows Per Execution',
             data.estNumRowsPerExec
           )}
-          {this.renderItem("Estimated Row Size (B)", data.estRowSize)}
-          {"ordered" in data
-            ? this.renderItem("Ordered", data.ordered.toString())
+          {this.renderItem('Estimated Row Size (B)', data.estRowSize)}
+          {'ordered' in data
+            ? this.renderItem('Ordered', data.ordered.toString())
             : null}
-          {this.renderItem("Node ID", data.nodeId)}
-          {"object" in data && (
+          {this.renderItem('Node ID', data.nodeId)}
+          {'object' in data && (
             <>
               <div className="break" />
-              {this.renderItem("Object", data.object)}
+              {this.renderItem('Object', data.object)}
             </>
           )}
-          {"outputList" in data && (
+          {'outputList' in data && (
             <>
               <div className="break" />
-              {this.renderItem("Output List", data.outputList, "prewrap")}
+              {this.renderItem('Output List', data.outputList, 'prewrap')}
             </>
           )}
         </div>
@@ -141,7 +141,7 @@ export default class TreeNode extends React.Component {
 
   displayNum = (num) => {
     const parts = String(num).split(/[eE]/);
-    if (!parts || !parts.length) return "";
+    if (!parts || !parts.length) return '';
     if (parts.length === 1) return parts[0];
     return num.toFixed(Math.abs(parts.pop()));
   };

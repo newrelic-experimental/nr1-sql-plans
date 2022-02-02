@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { Button, NrqlQuery, Tooltip } from "nr1";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Button, NrqlQuery, Tooltip } from 'nr1';
 
-import zlib from "zlib";
-import { Buffer } from "buffer";
+import zlib from 'zlib';
+import { Buffer } from 'buffer';
 
-import TreeNode from "./tree-node";
+import TreeNode from './tree-node';
 
 export default class PlanTree extends React.Component {
   static propTypes = {
@@ -30,7 +30,7 @@ export default class PlanTree extends React.Component {
   parseXML = (xml) => {
     let res;
     try {
-      res = this.parser.parseFromString(xml, "text/xml");
+      res = this.parser.parseFromString(xml, 'text/xml');
     } catch (e) {
       console.error(e);
     }
@@ -65,10 +65,10 @@ export default class PlanTree extends React.Component {
       const {
         data: [row],
       } = data[0];
-      const { query_plan: plan, "newrelic.ext.query_plan": blob } = row;
-      const planCont = blob ? atob(blob) : "";
-      const queryPlan = `${plan || ""}${planCont}`;
-      const compressedData = Buffer.from(queryPlan, "base64");
+      const { query_plan: plan, 'newrelic.ext.query_plan': blob } = row;
+      const planCont = blob ? atob(blob) : '';
+      const queryPlan = `${plan || ''}${planCont}`;
+      const compressedData = Buffer.from(queryPlan, 'base64');
       const sql = { short: row.short_text, complete: row.complete_text };
       this.jsonFromZip(compressedData).then((json) =>
         this.buildTree(json, sql)
@@ -89,29 +89,29 @@ export default class PlanTree extends React.Component {
     } = treeData;
     console.log(tree);
     if (tree) {
-      const elem = tree.length ? tree.find((el) => "QueryPlan" in el) : tree;
+      const elem = tree.length ? tree.find((el) => 'QueryPlan' in el) : tree;
       if (elem) {
-        const qpln = elem["QueryPlan"];
+        const qpln = elem['QueryPlan'];
         data = {
-          type: this.getDataForAttrib(elem, "-StatementType"),
-          statement: this.getDataForAttrib(elem, "-StatementText"),
+          type: this.getDataForAttrib(elem, '-StatementType'),
+          statement: this.getDataForAttrib(elem, '-StatementText'),
           cachedPlanSize: this.getDataForAttrib(
             qpln || {},
-            "-CachedPlanSize",
+            '-CachedPlanSize',
             true
           ),
           estSubtreeCost: this.getDataForAttrib(
             elem,
-            "-StatementSubTreeCost",
+            '-StatementSubTreeCost',
             true
           ),
           estNumRowsPerExec: this.getDataForAttrib(
             elem,
-            "-StatementEstRows",
+            '-StatementEstRows',
             true
           ),
           estOperatorCost: null,
-          children: qpln ? [await this.buildBranch(qpln["RelOp"])] : null,
+          children: qpln ? [await this.buildBranch(qpln['RelOp'])] : null,
         };
       }
     }
@@ -121,72 +121,72 @@ export default class PlanTree extends React.Component {
 
   buildBranch = async (branchData) => {
     let data = {
-      physicalOp: this.getDataForAttrib(branchData, "-PhysicalOp"),
-      logicalOp: this.getDataForAttrib(branchData, "-LogicalOp"),
-      estExecMode: this.getDataForAttrib(branchData, "-EstimatedExecutionMode"),
-      estIOCost: this.getDataForAttrib(branchData, "-EstimateIO", true),
-      estCPUCost: this.getDataForAttrib(branchData, "-EstimateCPU", true),
+      physicalOp: this.getDataForAttrib(branchData, '-PhysicalOp'),
+      logicalOp: this.getDataForAttrib(branchData, '-LogicalOp'),
+      estExecMode: this.getDataForAttrib(branchData, '-EstimatedExecutionMode'),
+      estIOCost: this.getDataForAttrib(branchData, '-EstimateIO', true),
+      estCPUCost: this.getDataForAttrib(branchData, '-EstimateCPU', true),
       estSubtreeCost: this.getDataForAttrib(
         branchData,
-        "-EstimatedTotalSubtreeCost",
+        '-EstimatedTotalSubtreeCost',
         true
       ),
       estNumRowsPerExec: this.getDataForAttrib(
         branchData,
-        "-EstimateRows",
+        '-EstimateRows',
         true
       ),
-      estRowSize: this.getDataForAttrib(branchData, "-AvgRowSize", true),
-      nodeId: this.getDataForAttrib(branchData, "-NodeId"),
-      estRowsRead: this.getDataForAttrib(branchData, "-EstimatedRowsRead"),
+      estRowSize: this.getDataForAttrib(branchData, '-AvgRowSize', true),
+      nodeId: this.getDataForAttrib(branchData, '-NodeId'),
+      estRowsRead: this.getDataForAttrib(branchData, '-EstimatedRowsRead'),
     };
 
     const operationData = this.objectForOperation(branchData, data.physicalOp);
 
-    data.storage = this.getDataForAttrib(operationData, "-Storage");
-    data.ordered = Boolean(this.getDataForAttrib(operationData, "-Ordered"));
+    data.storage = this.getDataForAttrib(operationData, '-Storage');
+    data.ordered = Boolean(this.getDataForAttrib(operationData, '-Ordered'));
 
-    if ("Object" in operationData) {
+    if ('Object' in operationData) {
       const {
-        "-Database": db,
-        "-Schema": sch,
-        "-Table": tbl,
-        "-Index": idx,
-      } = operationData["Object"];
+        '-Database': db,
+        '-Schema': sch,
+        '-Table': tbl,
+        '-Index': idx,
+      } = operationData['Object'];
       if (db && sch && tbl)
-        data.object = `${db}.${sch}.${tbl}${idx ? `.${idx}` : ""}`;
+        data.object = `${db}.${sch}.${tbl}${idx ? `.${idx}` : ''}`;
     }
 
-    if ("OutputList" in branchData) {
-      const o = branchData["OutputList"]["ColumnReference"];
+    if ('OutputList' in branchData) {
+      const o = branchData['OutputList']['ColumnReference'];
       if (o) {
         if (!Array.isArray(o)) {
           const {
-            "-Database": db,
-            "-Schema": sch,
-            "-Table": tbl,
-            "-Column": col,
+            '-Database': db,
+            '-Schema': sch,
+            '-Table': tbl,
+            '-Column': col,
           } = o;
-          data.outputList = `${db ? `${db}.` : ""}${sch ? `${sch}.` : ""}${
-            tbl ? `${tbl}.` : ""
-          }${col ? col : ""}`;
+          data.outputList = `${db ? `${db}.` : ''}${sch ? `${sch}.` : ''}${
+            tbl ? `${tbl}.` : ''
+          }${col ? col : ''}`;
         } else {
           data.outputList = o
             .reduce((acc, ol) => {
               const {
-                "-Database": db,
-                "-Schema": sch,
-                "-Table": tbl,
-                "-Column": col,
+                '-Database': db,
+                '-Schema': sch,
+                '-Table': tbl,
+                '-Column': col,
               } = ol;
               acc.push(
-                `${db ? `${db}.` : ""}${sch ? `${sch}.` : ""}${
-                  tbl ? `${tbl}.` : ""
-                }${col ? col : ""}`
+                `${db ? `${db}.` : ''}${sch ? `${sch}.` : ''}${
+                  tbl ? `${tbl}.` : ''
+                }${col ? col : ''}`
               );
               return acc;
             }, [])
-            .join("\n");
+            .join('\n');
         }
       }
     }
@@ -210,9 +210,9 @@ export default class PlanTree extends React.Component {
   };
 
   objectForOperation = (data, operation) => {
-    const ignoreKeys = ["OutputList", "MemoryFractions"];
+    const ignoreKeys = ['OutputList', 'MemoryFractions'];
     const key = Object.keys(data).find(
-      (k) => !ignoreKeys.includes(k) && typeof data[k] === "object"
+      (k) => !ignoreKeys.includes(k) && typeof data[k] === 'object'
     );
     return key ? data[key] : null;
   };
