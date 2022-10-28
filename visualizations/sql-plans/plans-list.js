@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { NrqlQuery, Tooltip } from 'nr1';
+import { Card, CardBody, HeadingText, NrqlQuery, Tooltip } from 'nr1';
 
 export default class PlansList extends React.Component {
   static propTypes = {
@@ -20,9 +20,10 @@ export default class PlansList extends React.Component {
   loadData = async () => {
     const { accountId } = this.props;
 
+    const accountIds = [accountId];
     const query = `SELECT sql_hostname, database_name, short_text, timestamp, messageId, complete_text FROM Log WHERE query_plan IS NOT NULL`;
 
-    const { data: resp, error } = await NrqlQuery.query({ query, accountId });
+    const { data: resp, error } = await NrqlQuery.query({ query, accountIds });
 
     if (resp && resp.length) {
       const { data } = resp[0];
@@ -50,6 +51,8 @@ export default class PlansList extends React.Component {
     const { accountId } = this.props;
     const { data } = this.state;
 
+    if (!data || !data.length) return <EmptyState />;
+
     return (
       <>
         {data && (
@@ -76,3 +79,16 @@ export default class PlansList extends React.Component {
     );
   }
 }
+
+const EmptyState = () => (
+  <Card className="EmptyState">
+    <CardBody className="EmptyState-cardBody">
+      <HeadingText
+        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
+        type={HeadingText.TYPE.HEADING_3}
+      >
+        No plans found!
+      </HeadingText>
+    </CardBody>
+  </Card>
+);
