@@ -57,9 +57,10 @@ export default class PlanTree extends React.Component {
   loadData = async () => {
     const { accountId, messageId } = this.props;
 
+    const accountIds = [accountId];
     const query = `SELECT query_plan, blob(\`newrelic.ext.query_plan\`), short_text, complete_text FROM Log WHERE messageId='${messageId}'`;
 
-    const { data, error } = await NrqlQuery.query({ query, accountId });
+    const { data, error } = await NrqlQuery.query({ query, accountIds });
 
     if (data && data.length) {
       const {
