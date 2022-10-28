@@ -5,8 +5,8 @@
     "scripts": {
         "start": "nr1 nerdpack:serve",
         "test": "exit 0",
-        "eslint-check": "eslint nerdlets/",
-        "eslint-fix": "eslint nerdlets/ --fix"
+        "eslint-check": "eslint visualizations/",
+        "eslint-fix": "eslint visualizations/ --fix"
     },
     "bugs": {
         "email": "opensource+nr1-sql-plans@newrelic.com"
@@ -25,7 +25,7 @@
         "@newrelic/eslint-plugin-newrelic": "^0.3.1",
         "@semantic-release/changelog": "^6.0.1",
         "@semantic-release/git": "^10.0.1",
-        "eslint": "^8.8.0",
-        "prettier": "^2.5.1"
+        "eslint": "^6.8.0",
+        "prettier": "^1.19.1"
     }
 }
